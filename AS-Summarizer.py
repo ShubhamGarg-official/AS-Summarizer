@@ -289,26 +289,33 @@ if st.button("🧠 Get Summary"):
                 st.markdown(f"**Example {i}:** {ex}")
 
     # ------------------------- Download as PDF -------------------------
-    if selected_as and summary and "⚠️" not in summary:
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial", size=12)
-        pdf.multi_cell(0, 10, f"{selected_as}\n\n{summary}\n")
-        if examples:
-            pdf.multi_cell(0, 10, "\nReal-life Examples:")
-            for i, ex in enumerate(examples, 1):
-                pdf.multi_cell(0, 10, f"Example {i}: {ex}")
+if selected_as and summary and "⚠️" not in summary:
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
 
-        buffer = io.BytesIO()
-        pdf_bytes = pdf.output(dest='S').encode('latin-1', errors='ignore')
-        buffer.write(pdf_bytes)
+    # Clean and safe summary for PDF
+    clean_summary = f"{selected_as}\n\n{summary}".encode('latin-1', 'ignore').decode('latin-1')
+    pdf.multi_cell(0, 10, clean_summary)
 
-        st.download_button(
-            label="📄 Download Summary as PDF",
-            data=buffer.getvalue(),
-            file_name=f"{selected_as.replace(':','').replace(' ','_')}_Summary.pdf",
-            mime="application/pdf"
-        )
+    if examples:
+        pdf.multi_cell(0, 10, "\nReal-life Examples:")
+        for i, ex in enumerate(examples, 1):
+            clean_ex = f"Example {i}: {ex}".encode('latin-1', 'ignore').decode('latin-1')
+            pdf.multi_cell(0, 10, clean_ex)
+
+    # Export to PDF buffer
+    buffer = io.BytesIO()
+    pdf_bytes = pdf.output(dest='S').encode('latin-1', 'ignore')
+    buffer.write(pdf_bytes)
+
+    st.download_button(
+        label="📄 Download Summary as PDF",
+        data=buffer.getvalue(),
+        file_name=f"{selected_as.replace(':', '').replace(' ', '_')}_Summary.pdf",
+        mime="application/pdf"
+    )
+
 
 # ------------------------- Footer -------------------------
 st.markdown("---")
