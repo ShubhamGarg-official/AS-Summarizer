@@ -263,7 +263,11 @@ def fetch_as_summary(query):
 
 # ------------------------- UI -------------------------
 st.subheader("🔍 Search or Select an Accounting Standard")
-user_input = st.text_input("Type an AS query:", placeholder="e.g. Summarize AS 10 or Explain AS 2")
+
+# Removed user_input field
+# user_input = st.text_input("Type an AS query:", placeholder="e.g. Summarize AS 10 or Explain AS 2")
+
+# Only dropdown remains
 dropdown = st.selectbox("Or select from list:", ["Select an AS"] + list(as_data.keys()))
 
 summary = ""
@@ -271,14 +275,12 @@ examples = []
 selected_as = ""
 
 if st.button("🧠 Get Summary"):
-    if user_input:
-        selected_as, summary, examples = fetch_as_summary(user_input)
-    elif dropdown != "Select an AS":
+    if dropdown != "Select an AS":
         selected_as = dropdown
         summary = as_data[selected_as]["summary"]
         examples = as_data[selected_as].get("examples", [])
     else:
-        summary = "⚠️ Please enter a query or select an AS."
+        summary = "⚠️ Please select an AS."
 
     st.markdown("---")
     st.markdown(f"**{selected_as}**\n\n{summary}")
@@ -289,33 +291,30 @@ if st.button("🧠 Get Summary"):
                 st.markdown(f"**Example {i}:** {ex}")
 
     # ------------------------- Download as PDF -------------------------
-if selected_as and summary and "⚠️" not in summary:
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
+    if selected_as and summary and "⚠️" not in summary:
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
 
-    # Clean and safe summary for PDF
-    clean_summary = f"{selected_as}\n\n{summary}".encode('latin-1', 'ignore').decode('latin-1')
-    pdf.multi_cell(0, 10, clean_summary)
+        clean_summary = f"{selected_as}\n\n{summary}".encode('latin-1', 'ignore').decode('latin-1')
+        pdf.multi_cell(0, 10, clean_summary)
 
-    if examples:
-        pdf.multi_cell(0, 10, "\nReal-life Examples:")
-        for i, ex in enumerate(examples, 1):
-            clean_ex = f"Example {i}: {ex}".encode('latin-1', 'ignore').decode('latin-1')
-            pdf.multi_cell(0, 10, clean_ex)
+        if examples:
+            pdf.multi_cell(0, 10, "\nReal-life Examples:")
+            for i, ex in enumerate(examples, 1):
+                clean_ex = f"Example {i}: {ex}".encode('latin-1', 'ignore').decode('latin-1')
+                pdf.multi_cell(0, 10, clean_ex)
 
-    # Export to PDF buffer
-    buffer = io.BytesIO()
-    pdf_bytes = pdf.output(dest='S').encode('latin-1', 'ignore')
-    buffer.write(pdf_bytes)
+        buffer = io.BytesIO()
+        pdf_bytes = pdf.output(dest='S').encode('latin-1', 'ignore')
+        buffer.write(pdf_bytes)
 
-    st.download_button(
-        label="📄 Download Summary as PDF",
-        data=buffer.getvalue(),
-        file_name=f"{selected_as.replace(':', '').replace(' ', '_')}_Summary.pdf",
-        mime="application/pdf"
-    )
-
+        st.download_button(
+            label="📄 Download Summary as PDF",
+            data=buffer.getvalue(),
+            file_name=f"{selected_as.replace(':', '').replace(' ', '_')}_Summary.pdf",
+            mime="application/pdf"
+        )
 
 # ------------------------- Footer -------------------------
 st.markdown("---")
