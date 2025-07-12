@@ -300,7 +300,7 @@ if st.button("🧠 Get Summary"):
                 pdf.multi_cell(0, 10, f"Example {i}: {ex}")
 
         buffer = io.BytesIO()
-        pdf_bytes = pdf.output(dest='S').encode('latin-1')
+        pdf_bytes = pdf.output(dest='S').encode('latin-1', errors='ignore')
         buffer.write(pdf_bytes)
 
         st.download_button(
