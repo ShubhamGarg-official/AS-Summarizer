@@ -84,8 +84,6 @@ if st.button("🧠 Get Summary"):
         file_name=f\"{selected_as.replace(':','').replace(' ','_')}_Summary.pdf\",
         mime=\"application/pdf\"
     )
-
-
 # ------------------------- Footer -------------------------
 st.markdown("---")
 st.caption("Made for CA Students | Phase 1: AS Summarizer | 100% Free Version | Ind AS & Comparisons coming soon")
