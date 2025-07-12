@@ -312,4 +312,4 @@ if st.button("🧠 Get Summary"):
 
 # ------------------------- Footer -------------------------
 st.markdown("---")
-st.caption("
+st.caption("Made for CA Students | AS Summarizer with Real-life Examples | Ind AS & Comparison Coming Soon")
