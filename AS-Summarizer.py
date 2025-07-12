@@ -68,20 +68,23 @@ if st.button("🧠 Get Summary"):
     st.markdown(f"**{selected_as}**\n\n{summary}")
 
     # ------------------------- Download as PDF -------------------------
-    if selected_as and summary and "⚠️" not in summary:
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial", size=12)
-        pdf.multi_cell(0, 10, f"{selected_as}\n\n{summary}")
+    if selected_as and summary and \"⚠️\" not in summary:
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font(\"Arial\", size=12)
+    pdf.multi_cell(0, 10, f\"{selected_as}\\n\\n{summary}\")
 
-        buffer = io.BytesIO()
-        pdf.output(buffer)
-        st.download_button(
-            label="📄 Download Summary as PDF",
-            data=buffer.getvalue(),
-            file_name=f"{selected_as.replace(':','').replace(' ','_')}_Summary.pdf",
-            mime="application/pdf"
-        )
+    buffer = io.BytesIO()
+    pdf_bytes = pdf.output(dest='S').encode('latin-1')
+    buffer.write(pdf_bytes)
+
+    st.download_button(
+        label=\"📄 Download Summary as PDF\",
+        data=buffer.getvalue(),
+        file_name=f\"{selected_as.replace(':','').replace(' ','_')}_Summary.pdf\",
+        mime=\"application/pdf\"
+    )
+
 
 # ------------------------- Footer -------------------------
 st.markdown("---")
