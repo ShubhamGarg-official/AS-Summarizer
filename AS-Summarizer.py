@@ -1,5 +1,5 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 
 # ------------------------- Configuration -------------------------
 st.set_page_config(page_title="AS Summarizer for CA Students")
@@ -7,7 +7,8 @@ st.title("📘 Accounting Standards (AS) Summarizer")
 st.markdown("Get quick summaries of ICAI Accounting Standards (AS). Ask questions like 'Summarize AS 10' or 'Explain AS 12 with example'.")
 
 # Optional: Set your OpenAI API key here (if running locally)
-openai.api_key = st.secrets["OPENAI_API_KEY"] if "OPENAI_API_KEY" in st.secrets else ""
+api_key = st.secrets["OPENAI_API_KEY"] if "OPENAI_API_KEY" in st.secrets else ""
+client = OpenAI(api_key=api_key)
 
 # ------------------------- Prompt Template -------------------------
 def generate_prompt(user_query):
@@ -26,7 +27,7 @@ def generate_prompt(user_query):
 def get_as_summary(query):
     try:
         messages = generate_prompt(query)
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
             temperature=0.5,
